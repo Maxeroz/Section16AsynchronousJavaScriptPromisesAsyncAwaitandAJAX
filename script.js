@@ -152,6 +152,8 @@ const renderCountry = function (data, className = '') {
 //     });
 // };
 
+// Chaining Promises
+
 const getCoutryData = function (country) {
   // Country 1
   fetch(
@@ -177,5 +179,3 @@ const getCoutryData = function (country) {
 };
 
 getCoutryData('russia');
-
-// Chaining Promises
