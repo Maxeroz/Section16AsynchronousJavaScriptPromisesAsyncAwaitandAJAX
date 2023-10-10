@@ -247,7 +247,6 @@ btn.addEventListener('click', function () {
 
 // getCoutryData('asddfh');
 
-*/
 // Coding Challenge #1
 
 const renderError = function (msg) {
@@ -349,3 +348,7 @@ const whereAmI = function (
 whereAmI(52.508, 13.381, '715881696036124439037x17745');
 // whereAmI(19.037, 72.873, '715881696036124439037x17745');
 // whereAmI(-33.933, 18.474, '715881696036124439037x17745');
+
+
+*/
+// Asynchronous Behind the Scenes: The Event Loop
