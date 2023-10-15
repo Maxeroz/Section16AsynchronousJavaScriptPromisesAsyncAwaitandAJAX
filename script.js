@@ -505,9 +505,11 @@ const whereAmI = function (
 };
 
 btn.addEventListener('click', whereAmI);
-
 */
+
+/*
 // Coding Challenge #2
+
 const imgContainer = document.querySelector('.images');
 let currentImg;
 const images = document.getElementsByTagName('img');
@@ -527,7 +529,7 @@ const createImage = function (imgPath) {
       console.log('Image is loading');
       imgContainer.appendChild(currentImg);
 
-      return resolve(currentImg);
+      resolve(currentImg);
     });
 
     currentImg.addEventListener('error', () => {
@@ -536,17 +538,61 @@ const createImage = function (imgPath) {
   });
 };
 
-// createImage('img/img-1.jpg').then(() => {
-//   wait(2)
-//     .then(() => (currentImg.style.display = 'none'))
-//     .then(() => createImage('img/img-2.jpg'))
-//     .then(() => wait(2).then(() => (currentImg.style.display = 'none')));
-// });
-
 createImage('img/img-1.jpg')
   .then(() => wait(2))
   .then(() => (currentImg.style.display = 'none'))
-  .then(() => wait(2))
   .then(() => createImage('img/img-2.jpg'))
   .then(() => wait(2))
   .then(() => (currentImg.style.display = 'none'));
+*/
+
+// Consuming Promises with Async/Await
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const renderCountry = function (data, className = '') {
+  const html = `
+  <article class="country ${className}">
+      <img class="country__img" src="${data.flag}" />
+      <div class="country__data">
+          <h3 class="country__name">${data.name}</h3>
+          <h4 class="country__region">${data.region}</h4>
+          <p class="country__row"><span>👫</span>${(
+            +data.population / 1000000
+          ).toFixed(1)} people</p>
+          <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+          <p class="country__row"><span>💰</span>${data.currencies[0].name}</p>
+      </div>
+  </article>`;
+
+  countriesContainer.insertAdjacentHTML('beforeend', html);
+  countriesContainer.style.opacity = 1;
+};
+
+const whereAmI = async function () {
+  // Geolocation
+  const pos = await getPosition();
+  const { latitude: lat, longitude: lng } = pos.coords;
+
+  // Reverse geocoding
+  const resGeo = await fetch(
+    `https://geocode.xyz/${lat},${lng}?geoit=json&auth=715881696036124439037x17745`,
+    {}
+  );
+  const dataGeo = await resGeo.json();
+  console.log(dataGeo);
+
+  // Coutry data
+  const res = await fetch(
+    `https://countries-api-836d.onrender.com/countries/name/${dataGeo.country}`
+  );
+  const [data] = await res.json();
+  renderCountry(data);
+};
+
+whereAmI();
+console.log('FIRST');
