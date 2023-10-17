@@ -544,9 +544,50 @@ createImage('img/img-1.jpg')
   .then(() => createImage('img/img-2.jpg'))
   .then(() => wait(2))
   .then(() => (currentImg.style.display = 'none'));
+
+// async function test() {
+//   console.log('Hi from test() 1');
+//   await console.log('Hi from test() 2');
+//   console.log('Hi from test() 3');
+// }
+
+// console.log('Start');
+// test();
+// console.log('End');
+
+/*
+function timeout(cb, ms) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(cb());
+    }, ms);
+  });
+}
+
+async function fetchCountryData(country) {
+  await timeout(() => console.log('hi from setTimeout'), 3000);
+  const data = await fetch(
+    `https://countries-api-836d.onrender.com/countries/name/${country}}`
+  );
+  console.log(data);
+}
+
+// fetchCountryData('russia');
+
+const newPromise = new Promise.resolve('Hello from promise one').then(resp =>
+  console.log(resp)
+);
+
 */
 
+// Error Handling With try...catch
+
 // Consuming Promises with Async/Await
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  countriesContainer.style.opacity = 1;
+};
 
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
@@ -574,25 +615,45 @@ const renderCountry = function (data, className = '') {
 };
 
 const whereAmI = async function () {
-  // Geolocation
-  const pos = await getPosition();
-  const { latitude: lat, longitude: lng } = pos.coords;
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
 
-  // Reverse geocoding
-  const resGeo = await fetch(
-    `https://geocode.xyz/${lat},${lng}?geoit=json&auth=715881696036124439037x17745`,
-    {}
-  );
-  const dataGeo = await resGeo.json();
-  console.log(dataGeo);
+    // Reverse geocoding
+    const resGeo = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json&auth=715881696036124439037x17745`,
+      {}
+    );
 
-  // Coutry data
-  const res = await fetch(
-    `https://countries-api-836d.onrender.com/countries/name/${dataGeo.country}`
-  );
-  const [data] = await res.json();
-  renderCountry(data);
+    if (!resGeo.ok) {
+      throw new Error(`Problem getting location`);
+    }
+    const dataGeo = await resGeo.json();
+    console.log(dataGeo);
+
+    // Coutry data
+    const res = await fetch(
+      `https://countries-api-836d.onrender.com/countries/name/${dataGeo.countr}`
+    );
+    if (!res.ok) {
+      throw new Error(`Problem getting country`);
+    }
+    const [data] = await res.json();
+    renderCountry(data);
+  } catch (err) {
+    console.error(`${err} 💥`);
+    renderError(` ${err.message}`);
+  }
 };
 
 whereAmI();
 console.log('FIRST');
+
+// try {
+//   let y = 1;
+//   const x = 2;
+//   x = 3;
+// } catch (err) {
+//   console.error(err.message);
+// }
