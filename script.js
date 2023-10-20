@@ -719,7 +719,6 @@ const get3Countries = async function (c1, c2, c3) {
 };
 
 get3Countries('russia', 'netherlands', 'italia');
-*/
 
 // Promise.race
 const getJSON = function (url, errorMsg = 'Something went wrong') {
@@ -779,3 +778,70 @@ Promise.any([
 ])
   .then(res => console.log(res))
   .catch(err => console.error(err));
+
+*/
+
+// Coding Challenge #3
+
+// Part I
+
+const imgContainer = document.querySelector('.images');
+// let currentImg;
+const images = document.getElementsByTagName('img');
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    let currentImg;
+    currentImg = document.createElement('img');
+    currentImg.src = imgPath;
+
+    currentImg.addEventListener('load', () => {
+      console.log('Image is loading');
+      imgContainer.appendChild(currentImg);
+
+      resolve(currentImg);
+    });
+
+    currentImg.addEventListener('error', () => {
+      reject(new Error('Image is not found'));
+    });
+  });
+};
+
+/*
+(async function () {
+  try {
+    // Load image 1
+    let loadImage = await createImage('img/img-1.jpg');
+    let waiteFor = await wait(2);
+    currentImg.style.display = 'none';
+
+    // Load image 2
+    loadImage = await createImage('img/img-2.jpg');
+    waiteFor = await wait(2);
+    currentImg.style.display = 'none';
+  } catch (err) {
+    console.error(err.message);
+  }
+})();
+*/
+
+// Part II
+
+const loadAll = async function (imgArr) {
+  const imgs = imgArr.map(img => createImage(img));
+  console.log(imgs);
+
+  const actualImgs = await Promise.all(imgs);
+  console.log(actualImgs);
+
+  actualImgs.forEach(img => img.classList.add('parallel'));
+};
+
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
